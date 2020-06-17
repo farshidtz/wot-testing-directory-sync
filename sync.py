@@ -10,16 +10,20 @@ files = glob.glob('./**/*.jsonld', recursive=True)
 
 
 def put(td):
-    res = requests.put(endpoint+'/td/'+td['id'], 
+    path = '/td/'+td['id']
+    print('PUT', path)
+    res = requests.put(endpoint+path, 
         data=json.dumps(td).encode('utf-8'), 
         headers={'Authorization':auth})
 
-    print('Response:', res.status_code)
-    if res.status_code != 200 and res.status_code != 201:
+    print('Response:', res.status_code, res.reason)
+    if res.text != "":
         print('Response body:\n', json.dumps(json.loads(res.text), indent=4))
     return res.status_code
 
 def validate(td):
+    path = '/validation'
+    print('GET', path)
     res = requests.get(endpoint+'/validation', 
                 data=json.dumps(td).encode('utf-8'), 
                 headers={'Authorization':auth})
@@ -40,11 +44,12 @@ for filename in files:
             td['id']=uri_tag_prefix+id
             
         print('ID:', td['id'])
+ 
         # Submit
         try:
             code = put(td)
             if code == 400:
-                print('Validate again:')
+                print('\nJust validate:')
                 validate(td)
         except requests.exceptions.RequestException as e:
             raise SystemExit(e)
