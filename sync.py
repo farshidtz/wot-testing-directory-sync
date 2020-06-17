@@ -1,4 +1,4 @@
-import os, json, requests, glob, sys
+import os, json, requests, glob
 
 endpoint=os.environ['ENDPOINT']
 auth=os.environ['AUTHORIZATION']
@@ -16,7 +16,7 @@ def put(td):
 
     print('Response:', res.status_code)
     if res.status_code != 200 and res.status_code != 201:
-        print('Response body:\n', json.dumps(json.loads(res.text), indent=4), file=sys.stderr)
+        print('Response body:\n', json.dumps(json.loads(res.text), indent=4))
     return res.status_code
 
 def validate(td):
