@@ -1,7 +1,8 @@
 import os, json, requests, glob
 
-endpoint=os.environ['ENDPOINT']
-auth=os.environ['AUTHORIZATION']
+ENDPOINT=os.environ['ENDPOINT']
+AUTH=os.environ['AUTHORIZATION']
+TTL=os.environ['TTL']
 
 # for TD without an ID
 uri_tag_prefix='tag:demo.linksmart.eu,2020-06:'
@@ -12,9 +13,9 @@ files = glob.glob('./**/*.jsonld', recursive=True)
 def put(td):
     path = '/td/'+td['id']
     print('PUT', path)
-    res = requests.put(endpoint+path, 
+    res = requests.put(ENDPOINT+path, 
         data=json.dumps(td).encode('utf-8'), 
-        headers={'Authorization':auth})
+        headers={'Authorization':AUTH})
 
     print('Response:', res.status_code, res.reason)
     if res.text != "":
@@ -24,9 +25,9 @@ def put(td):
 def validate(td):
     path = '/validation'
     print('GET', path)
-    res = requests.get(endpoint+'/validation', 
+    res = requests.get(ENDPOINT+'/validation', 
                 data=json.dumps(td).encode('utf-8'), 
-                headers={'Authorization':auth})
+                headers={'Authorization':AUTH})
     print(json.dumps(json.loads(res.text), indent=4))
 
 for filename in files:
@@ -44,7 +45,10 @@ for filename in files:
             td['id']=uri_tag_prefix+id
             
         print('ID:', td['id'])
- 
+
+        # inject ttl
+        td['ttl']=TTL
+        
         # Submit
         try:
             code = put(td)
