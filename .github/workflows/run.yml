@@ -31,6 +31,7 @@ jobs:
     - name: Sync
       run: python sync.py
       env:
-        ENDPOINT: ${{ secrets.ENDPOINT }} # directory root endpoint
+        ENDPOINT: 'https://demo.linksmart.eu/thing-directory' # directory root endpoint
         AUTHORIZATION: ${{ secrets.AUTHORIZATION }} # authorization header
+        URI_PREFIX: 'tag:demo.linksmart.eu,2020-06:' # for TDs without an ID
         TTL: 7200 # 2 hours

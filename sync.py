@@ -1,11 +1,9 @@
 import os, json, requests, glob
 
-ENDPOINT=os.environ['ENDPOINT']
-AUTH=os.environ['AUTHORIZATION']
-TTL=os.environ['TTL']
-
-# for TD without an ID
-uri_tag_prefix='tag:demo.linksmart.eu,2020-06:'
+ENDPOINT=os.environ['ENDPOINT'] # directory root endpoint
+AUTH=os.environ['AUTHORIZATION'] # authorization header
+TTL=os.environ['TTL'] # seconds
+URI_PREFIX=os.environ['URI_PREFIX'] # for TDs without an ID
 
 files = glob.glob('./**/*.jsonld', recursive=True)
 
@@ -42,7 +40,7 @@ for filename in files:
                 id=id[2:]
             if id.endswith(".jsonld"):
                 id=id[:-7]
-            td['id']=uri_tag_prefix+id
+            td['id']=URI_PREFIX+id
             
         print('ID:', td['id'])
 
