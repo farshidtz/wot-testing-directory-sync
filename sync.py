@@ -7,32 +7,30 @@ URI_PREFIX=os.environ['URI_PREFIX'] # for TDs without an ID
 
 files = glob.glob('./**/*.jsonld', recursive=True)
 
-
+# add a TD or update an existing one
 def put(td):
-    path = '/td/'+td['id']
-    print('PUT', path)
-    res = requests.put(ENDPOINT+path, 
-        data=json.dumps(td).encode('utf-8'), 
-        headers={'Authorization':AUTH})
-
+    url = ENDPOINT+'/td/'+td['id']
+    print('PUT', url)
+    res = requests.put(url, data=json.dumps(td).encode('utf-8'), headers={'Authorization':AUTH})
     print('Response:', res.status_code, res.reason)
+
     if res.text != "":
         print('Response body:\n', json.dumps(json.loads(res.text), indent=4))
+    
     return res.status_code
 
+# validate a TD
 def validate(td):
-    path = '/validation'
-    print('GET', path)
-    res = requests.get(ENDPOINT+'/validation', 
-                data=json.dumps(td).encode('utf-8'), 
-                headers={'Authorization':AUTH})
-    print(json.dumps(json.loads(res.text), indent=4))
+    url = ENDPOINT+'/validation'
+    print('GET', url)
+    res = requests.get(url, data=json.dumps(td).encode('utf-8'), headers={'Authorization':AUTH})
+    print('Validation results:\n', json.dumps(json.loads(res.text), indent=4))
 
 for filename in files:
     print('File:', filename)
     with open(filename) as f:
-        read_data = f.read()
-        td = json.loads(read_data)
+        td = json.loads(f.read())
+
         if 'id' not in td:
             print("--> TD has no ID. Construct a Tag URI with filename:")
             id=filename
@@ -51,7 +49,7 @@ for filename in files:
         try:
             code = put(td)
             if code == 400:
-                print('\nJust validate:')
+                print('\nValidate the TD explicitly:')
                 validate(td)
         except requests.exceptions.RequestException as e:
             raise SystemExit(e)
