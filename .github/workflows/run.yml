@@ -4,8 +4,8 @@ name: Sync TDs with LinkSmart Thing Directory
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  schedule:
+    - cron:  '*/60 * * * *'
 
 jobs:
   run:
