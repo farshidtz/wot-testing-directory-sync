@@ -47,8 +47,8 @@ for filename in files:
         print('ID:', td['id'])
 
         # inject ttl
-        td['ttl']=TTL
-        
+        td['ttl']=int(TTL)
+
         # Submit
         try:
             code = put(td)
