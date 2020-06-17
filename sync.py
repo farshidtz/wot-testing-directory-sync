@@ -1,4 +1,4 @@
-import os, json, requests, glob
+import os, json, requests, glob, sys
 
 endpoint=os.environ['ENDPOINT']
 auth=os.environ['AUTHORIZATION']
@@ -16,7 +16,7 @@ def put(td):
 
     print('Response:', res.status_code)
     if res.status_code != 200 and res.status_code != 201:
-        print('Response body:\n', json.dumps(json.loads(res.text), indent=4))
+        print('Response body:\n', json.dumps(json.loads(res.text), indent=4), file=sys.stderr)
     return res.status_code
 
 def validate(td):
@@ -31,7 +31,7 @@ for filename in files:
         read_data = f.read()
         td = json.loads(read_data)
         if 'id' not in td:
-            print("TD has no ID. Construct a Tag URI with filename:")
+            print("--> TD has no ID. Construct a Tag URI with filename:")
             id=filename
             if id.startswith("./"):
                 id=id[2:]
