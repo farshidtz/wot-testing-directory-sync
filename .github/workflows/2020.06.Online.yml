@@ -1,5 +1,5 @@
 
-name: Sync TDs with LinkSmart Thing Directory
+name: Sync 2020.06.Online TDs with LinkSmart Thing Directory
 
 on:
   push:
