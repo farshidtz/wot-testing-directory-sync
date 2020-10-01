@@ -55,6 +55,7 @@ def validate(td):
 
 
 for filename in files:
+    print('\n----------')
     print('File:', filename)
     with open(filename) as f:
         try:
@@ -71,4 +72,3 @@ for filename in files:
         except requests.exceptions.RequestException as e:
             raise SystemExit(e)
     
-    print('----------\n')
