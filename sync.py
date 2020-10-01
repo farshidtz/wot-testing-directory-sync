@@ -57,7 +57,11 @@ def validate(td):
 for filename in files:
     print('File:', filename)
     with open(filename) as f:
-        td = json.loads(f.read())
+        try:
+            td = json.loads(f.read())
+        except ValueError as e:
+            print('Error loading JSON file:\n', e)
+            continue
 
         # inject ttl
         td['ttl']=int(TTL)
