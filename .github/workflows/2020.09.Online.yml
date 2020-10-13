@@ -5,7 +5,7 @@ on:
   push:
     branches: [ master ]
   schedule:
-    - cron:  '*/60 * * * *' # same as TTL; see below
+    - cron:  '0 3 * * *' # same as TTL; see below
 
 jobs:
   run:
@@ -32,4 +32,4 @@ jobs:
       env:
         ENDPOINT: 'https://demo.linksmart.eu/thing-directory' # directory root endpoint
         AUTHORIZATION: ${{ secrets.AUTHORIZATION }} # authorization header
-        TTL: 3600 # 1 hour
+        TTL: 86400 # 1 hour
