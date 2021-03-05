@@ -9,7 +9,7 @@ on:
 
 jobs:
   run:
-
+    timeout-minutes: 10 # minutes
     runs-on: ubuntu-latest
 
     steps:
