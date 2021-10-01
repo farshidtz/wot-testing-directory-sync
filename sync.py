@@ -1,14 +1,18 @@
 import os, json, requests, glob
 
-ENDPOINT=os.environ['ENDPOINT'] # directory root endpoint
-AUTH=os.environ['AUTHORIZATION'] # authorization header
-TTL=os.environ['TTL'] # seconds
+ENDPOINT=os.getenv('ENDPOINT') # directory root endpoint
+AUTH=os.getenv('AUTHORIZATION') # authorization header (optional)
+TTL=os.getenv('TTL') # seconds (optional: overrides existing ttl)
+
+if ENDPOINT is None:
+    print("ERROR: ENDPOINT not set.")
+    exit(1)
 
 files = glob.glob('./**/*.jsonld', recursive=True)
 
 # create a TD or update an existing one
 def put(td):
-    url = ENDPOINT+'/td/'+td['id']
+    url = ENDPOINT+'/things/'+td['id']
     print('PUT', url)
     res = requests.put(url, data=json.dumps(td).encode('utf-8'), headers={'Authorization':AUTH})
     print('Response:', res.status_code, res.reason)
@@ -20,7 +24,7 @@ def put(td):
 
 # create a TD
 def post(td):
-    url = ENDPOINT+'/td'
+    url = ENDPOINT+'/things'
     print('POST', url)
     res = requests.post(url, data=json.dumps(td).encode('utf-8'), headers={'Authorization':AUTH})
     print('Response:', res.status_code, res.reason)
@@ -40,19 +44,6 @@ def submit(td):
         print("--> TD has no ID. Will POST.")
         code = post(td)
 
-    
-    if code == 400:
-        print('\nValidate the TD explicitly:')
-        validate(td)
-
-
-# validate a TD
-def validate(td):
-    url = ENDPOINT+'/validation'
-    print('GET', url)
-    res = requests.get(url, data=json.dumps(td).encode('utf-8'), headers={'Authorization':AUTH})
-    print('Validation results:\n', json.dumps(json.loads(res.text), indent=4))
-
 
 for filename in files:
     print('\n----------')
@@ -64,8 +55,12 @@ for filename in files:
             print('Error loading JSON file:\n', e)
             continue
 
-        # inject ttl
-        td['ttl']=int(TTL)
+        # set/override ttl
+        if TTL is not None:
+            if 'registration' in td:
+                td['registration']['ttl']=int(TTL)
+            else:
+                td['registration'] = {'ttl': int(TTL)}
 
         try:
             submit(td)
